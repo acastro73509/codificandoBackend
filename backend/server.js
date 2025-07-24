@@ -22,6 +22,8 @@ app.use(express.json());                                    // Middleware para p
 app.use(express.urlencoded({ extended: false }));           // Middleware para parsear datos de formularios URL-encoded, usa QueryString, urlencoded indica que se pueden enviar datos en el cuerpo de la petición
 // Aquí empieza la configuración de las rutas del browser, que archivos los procesarán, normalmente en la carpeta routes
 app.use('/api/tareas', require('./routes/tareasRoutes'));   // Importación de la ruta del browser /api/tareas hacia el archivo de rutas ./routes/tareasRoutes.js
+app.use('/api/users', require('./routes/usersRoutes'));     // Importación de la ruta del browser /api/users hacia el archivo de rutas ./routes/usersRoutes.js
+
 // Configuración del middleware de manejo de errores
 app.use(errorHandler);                                      // Middleware para manejar errores, se coloca al final de todas las
                                                             // rutas para capturar cualquier error que ocurra en las rutas anteriores

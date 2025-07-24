@@ -65,11 +65,10 @@ const deleteTareas = asyncHandler (async (req, res) => {
     }
 
     // Elimina la tarea de la base de datos
-    // El método findByIdAndDelete() busca la tarea por su ID y la elimina
-    await Tarea.deleteOne(tarea);                            // Elimina la tarea encontrada
-    // Devuelve un mensaje de éxito con un estado 200 (OK)
-    // El estado 200 indica que la solicitud ha tenido éxito y se ha eliminado el recurso
-    // El mensaje indica que la tarea ha sido eliminada correctamente
+    // El método deleteOne() elimina un documento específico de la colección de tareas
+    // Se utiliza el objeto tarea encontrado para eliminarlo
+    await Tarea.deleteOne(tarea);                                       // Elimina la tarea encontrada
+    // Devuelve un mensaje de éxito con un estado 200 (OK), que indica que la solicitud ha tenido éxito y se ha eliminado el recurso correctamente
     res.status(200).json({ message: `Tarea ${req.params.id} eliminada` }); // Devuelve un mensaje de éxito indicando que la tarea ha sido eliminada
 })
 
