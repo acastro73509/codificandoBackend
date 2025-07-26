@@ -2,11 +2,9 @@ const jwt = require('jsonwebtoken'); // Importa la librería jsonwebtoken para g
 const asyncHandler = require('express-async-handler'); // Importa el middleware para manejar errores de forma asíncrona
 const User = require('../models/usersModels'); // Importa el modelo de usuario para interactuar con la base de datos
 
-// Middleware para proteger las rutas que requieren autenticación
-// Este middleware verifica si el usuario está autenticado mediante un token JWT, este se pasa en los encabezados de la página web
+// Middleware para proteger las rutas que requieren autenticación, verifica si el usuario está autenticado mediante un token JWT, este se pasa en los encabezados de la página web
 const protect = asyncHandler(async (req, res, next) => {
     let token;                                                                          // Inicializa la variable token
-
     // Verifica si el token está presente en los encabezados de autorización
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {          // Si existe el encabezado de autorización  y comienza con 'Bearer'
         try {
@@ -27,15 +25,11 @@ const protect = asyncHandler(async (req, res, next) => {
             throw new Error('Acceso no autorizado');                                    // ... Lanza un error indicando que el token no es válido
         }
     }
-
     if (!token) {                                                                      // Si no hay token...
         res.status(401);                                                                // ...Devuelve un error 401 (No autorizado)
         throw new Error('No hay token, acceso denegado');                               // ... Lanza un error indicando que no hay token y el acceso está denegado
     }
-
 });
 
 // Exporta el middleware de protección para que pueda ser utilizado en las rutas
 module.exports = { protect }; // Exporta el middleware protect para su uso en otras partes de la aplicación
-// Este middleware se utiliza para proteger las rutas que requieren autenticación, asegurando que el usuario esté autenticado antes de acceder a ellas.
-// El token JWT se utiliza para autenticar al usuario y verificar su identidad en las solicitudes posteriores

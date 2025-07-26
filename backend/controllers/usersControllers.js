@@ -84,8 +84,8 @@ const misDatos = asyncHandler(async (req, res) => {
 });
 
 // ------------- Función para generar un token JWT
-const generateToken = (id_usuario) => {
-    return jwt.sign({ id_usuario },                                     // Genera un token JWT utilizando el ID del usuario
+const generateToken = (id) => {
+    return jwt.sign({ id },                                     // Genera un token JWT utilizando el ID del usuario
         process.env.JWT_SECRET,                                 // La clave secreta para firmar el token (Ver las variables de entorno)
         {                               
         expiresIn: '30d'                                        // El token expirará en 30 días

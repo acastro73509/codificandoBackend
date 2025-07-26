@@ -10,5 +10,5 @@ router.put('/:id', protect, updateTareas);                          // Ruteador 
 router.delete('/:id', protect, deleteTareas);                       // Ruteador para eliminar una tarea por ID con el método DELETE
 
 // Exportar el ruteador para que pueda ser utilizado en otros archivos
-module.exports = router;                            // Esto permite que las rutas definidas aquí sean accesibles desde el archivo principal del servidor
+module.exports = router;                                        // Esto permite que las rutas definidas aquí sean accesibles desde el archivo principal del servidor
                                         
