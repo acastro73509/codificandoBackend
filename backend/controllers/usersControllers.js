@@ -55,22 +55,24 @@ const registrar = asyncHandler(async (req, res) => {
     }
 });
 
-// Controlador para iniciar sesión (Login) de un usuario
+// ------------- Controlador para iniciar sesión (Login) de un usuario ------------------------
 const login = asyncHandler(async (req, res) => {
+    // Desestructurar el cuerpo de la solicitud para obtener las credenciales del usuario
+    // req.body contiene los datos enviados en la solicitud, como email y password
     const { email, password } = req.body;                           // Extrae el email y la contraseña del cuerpo de la solicitud
 
     // Verifica si el usuario existe en la base de datos
     const user = await User.findOne({ email });                     // Busca un usuario con el email proporcionado
-    if (user && (await bcrypt.compare(password, user.password))) {  // Compara la contraseña proporcionada con la almacenada en la base de datos
-        res.json({                                                  // Si las credenciales son correctas, devuelve los datos del usuario y un token JWT
+    if (user && (await bcrypt.compare(password, user.password))) {  // Si el usuario existe y la contraseña proporcionada es igual a la almacenada en la base de datos...
+        res.json({                                                  // ... Devuelve los datos del usuario y un token JWT
             _id: user._id,
             nombre: user.nombre,
             email: user.email,
             token: generateToken(user._id)                          // Genera un token JWT para el usuario autenticado
         });
-    } else {
-        res.status(401);                                            // Si las credenciales son incorrectas, devuelve un error 401 (No autorizado)
-        throw new Error('Credenciales inválidas');                  // Lanza un error indicando que las credenciales son inválidas
+    } else {                                                        // Si el usuario no existe o la contraseña es incorrecta... 
+        res.status(401);                                            // ... Devuelve un error 401 (No autorizado)
+        throw new Error('Credenciales inválidas');                  // ... Lanza un error indicando que las credenciales son inválidas
     }
 });
 
@@ -81,10 +83,12 @@ const misDatos = asyncHandler(async (req, res) => {
     res.json(user);                                             // Devuelve los datos del usuario en formato JSON
 });
 
-// Función para generar un token JWT
-const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {         // Crea un token JWT con el ID del usuario y la clave secreta definida en las variables de entorno
-        expiresIn: JWT_EXPIRE                                 // El token expirará en 30 días (Ver la Variable de entorno)
+// ------------- Función para generar un token JWT
+const generateToken = (id_usuario) => {
+    return jwt.sign({ id_usuario },                                     // Genera un token JWT utilizando el ID del usuario
+        process.env.JWT_SECRET,                                 // La clave secreta para firmar el token (Ver las variables de entorno)
+        {                               
+        expiresIn: '30d'                                        // El token expirará en 30 días
     });
 }
 

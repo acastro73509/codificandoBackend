@@ -9,7 +9,7 @@ const Tarea = require('../models/tareasModels');                        // Impor
 
 const getTareas = asyncHandler(async (req, res) => {
    
-    const tareas = await Tarea.find({});                                // El método find() busca todas las tareas en la base de datos
+    const tareas = await Tarea.find({ user: req.user.id});              // El método find() busca todas las tareas en la base de datos, filtrando por el ID del usuario autenticado
     res.status(200).json(tareas);                                       // Devuelve las tareas encontradas con un estado 200 (OK)
 })
 
@@ -25,7 +25,8 @@ const createTareas = asyncHandler( async (req, res) => {
     // El método create() crea un nuevo documento en la colección de tareas
     const tarea = await Tarea.create({
         // La descripción de la tarea se obtiene del cuerpo de la solicitud (req.body)
-        descripcion: req.body.descripcion                               // Asigna la descripción de la tarea desde el cuerpo de la solicitud
+        descripcion: req.body.descripcion,                              // Asigna la descripción de la tarea desde el cuerpo de la solicitud
+        user: req.user.id                                               // Asigna el ID del usuario autenticado a la tarea, esto asegura que la tarea esté asociada al usuario que la creó
     });
     // Devuelve la tarea creada con un estado 201 (Creada), 201 indica que la solicitud ha tenido éxito y se ha creado un nuevo recurso, en este caso, se ha creado una nueva tarea en la base de datos
     res.status(201).json(tarea);
@@ -38,19 +39,22 @@ const updateTareas = asyncHandler( async (req, res) => {
         res.status(404);                                               // Si no se encuentra devuelve un error 404 (No encontrado)
         throw new Error('Tarea no encontrada');                        // Lanza un error si la tarea no se encuentra
     }
-    // Actualiza la tarea con la nueva descripción proporcionada en el cuerpo de la solicitud
-    // El método findByIdAndUpdate() busca la tarea por su ID y la actualiza con los nuevos datos
-    const tareaUpdated = await Tarea.findByIdAndUpdate(
-        req.params.id,                                                 // ID de la tarea a actualizar
-        req.body,                                                      // Nuevos datos de la tarea desde el cuerpo de la solicitud
-        {
-            new: true,                                                 // Devuelve el documento actualizado
-            runValidators: true                                        // Ejecuta los validadores del esquema antes de actualizar
-        }
-    );
-    // Devuelve la tarea actualizada con un estado 200 (OK)
-    // El estado 200 indica que la solicitud ha tenido éxito y se ha actualizado el recurso
-    res.status(200).json(tareaUpdated);                                 // Devuelve la tarea actualizada como respuesta
+
+    // Verifica si el usuario autenticado es el propietario de la tarea
+    if (tarea.user.toString() !== req.user.id) {                       // Compara el ID del usuario de la tarea con el ID del usuario autenticado
+        res.status(401);                                               // Si el usuario no es el propietario, devuelve un error 401 (No autorizado)
+        throw new Error('Usuario no autorizado');                      // Lanza un error indicando que el usuario no está autorizado para actualizar esta tarea
+    } else {
+        const tareaUpdated = await Tarea.findByIdAndUpdate(
+            req.params.id,                                                 // ID de la tarea a actualizar
+            req.body,                                                      // Nuevos datos de la tarea desde el cuerpo de la solicitud
+            {
+                new: true,                                                 // Devuelve el documento actualizado
+                runValidators: true                                        // Ejecuta los validadores del esquema antes de actualizar
+            }
+        );
+        res.status(200).json(tareaUpdated);                                 // Devuelve la tarea actualizada como respuesta
+    }
 
 })
 
@@ -64,12 +68,15 @@ const deleteTareas = asyncHandler (async (req, res) => {
         throw new Error('Tarea no encontrada');                        // Lanza un error si la tarea no se encuentra
     }
 
-    // Elimina la tarea de la base de datos
-    // El método deleteOne() elimina un documento específico de la colección de tareas
-    // Se utiliza el objeto tarea encontrado para eliminarlo
-    await Tarea.deleteOne(tarea);                                       // Elimina la tarea encontrada
-    // Devuelve un mensaje de éxito con un estado 200 (OK), que indica que la solicitud ha tenido éxito y se ha eliminado el recurso correctamente
-    res.status(200).json({ message: `Tarea ${req.params.id} eliminada` }); // Devuelve un mensaje de éxito indicando que la tarea ha sido eliminada
+    // Verifica si el usuario autenticado es el propietario de la tarea
+    if (tarea.user.toString() !== req.user.id) {                       // Compara el ID del usuario de la tarea con el ID del usuario autenticado
+        res.status(401);                                               // Si el usuario no es el propietario, devuelve un error 401 (No autorizado)
+        throw new Error('Usuario no autorizado');                      // Lanza un error indicando que el usuario no está autorizado para eliminar esta tarea
+    } else {
+        // Elimina la tarea de la base de datos, el método deleteOne() elimina un documento específico de la colección de tareas, se utiliza el objeto tarea encontrado para eliminarlo
+        await Tarea.deleteOne(tarea);                                       // Elimina la tarea encontrada
+        res.status(200).json({ message: `Tarea ${req.params.id} eliminada` }); // Devuelve un mensaje de éxito indicando que la tarea ha sido eliminada
+    }
 })
 
 // Exportar los controladores de tareas para que puedan ser utilizados en las rutas
