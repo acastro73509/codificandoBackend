@@ -32,4 +32,4 @@ const protect = asyncHandler(async (req, res, next) => {
 });
 
 // Exporta el middleware de protección para que pueda ser utilizado en las rutas
-module.exports = { protect }; // Exporta el middleware protect para su uso en otras partes de la aplicación
+module.exports = protect; // Exporta el middleware protect para su uso en otras partes de la aplicación
