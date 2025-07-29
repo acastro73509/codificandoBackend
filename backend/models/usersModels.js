@@ -1,6 +1,9 @@
+// ==================== Definición del Modelo de Datos de "User" en la base de datos MongoDB ==============================
+
+// Importación de Mongoose para interactuar con Mongo DB
 const mongoose = require('mongoose');                           // Importación del módulo mongoose para interactuar con MongoDB
 
-// Definición del esquema de usuario
+// ---------------- Definición del esquema de usuario (User)
 const userSchema = mongoose.Schema({
     nombre: {
         type: String,
@@ -22,6 +25,7 @@ const userSchema = mongoose.Schema({
 }, {
     timestamps: true                                            // Agrega campos de fecha de creación y actualización automáticamente
 });
-// Exporta el modelo de usuario para que pueda ser utilizado en otros archivos
-module.exports = mongoose.model('User', userSchema);            // Exporta el modelo de usuario (User) basado en el esquema definido
-// El modelo se llama 'User' y se basa en el esquema userSchema definido anteriormente
+
+// Exportar el Modelo de Datos de "User" para que pueda ser utilizado en otros archivos
+module.exports = mongoose.model('User', userSchema);            // Modelo de usuario "User" basado en el esquema definido
+

@@ -1,8 +1,10 @@
-// Importar los módulos necesarios
-const jwt = require('jsonwebtoken');                            // Importa el módulo jsonwebtoken para manejar la autenticación basada en tokens
-const bcrypt = require('bcrypt');                               // Importa el módulo bcrypt para manejar el hash de contraseñas
-const asyncHandler = require('express-async-handler');          // Importa el middleware para manejar errores
-const User = require('../models/usersModels');                  // Importa el modelo de usuario para interactuar con la base de datos
+// ==================== Definición de los Controladores de Usuarios ==============================
+
+// Importación de los módulos necesarios para la definción de los Controladores de los Usuarios
+const asyncHandler = require('express-async-handler');                  // Importación del manejador de errores asíncronos de Express, nos permite manejar errores en las funciones asíncronas de manera más sencilla
+const User = require('../models/usersModels');                          // Importación del modelo de Usuarios, que define su estructura en la base de datos
+const jwt = require('jsonwebtoken');                                    // Importa el módulo jsonwebtoken (JWT) para manejar la autenticación basada en tokens
+const bcrypt = require('bcrypt');                                       // Importa el módulo bcrypt para manejar el hash de contraseñas
 
 // Controlador para registrar un nuevo usuario
 const registrar = asyncHandler(async (req, res) => {
@@ -17,11 +19,7 @@ const registrar = asyncHandler(async (req, res) => {
     }
 
     // Calcular el Hash de la contraseña antes de almacenarla en la base de datos
-    // El método hash() de bcrypt se utiliza para crear un hash seguro de la contraseña
-    // El segundo parámetro es el número de rondas de salting, que determina la complejidad del hash
-    // Un número mayor de rondas hace que el hash sea más seguro, pero también más lento de calcular
-    // En este caso, se utiliza 10 rondas de salting para crear un hash
-    const salt = await bcrypt.genSalt(10);                      // Genera un salt para el hash de la contraseña
+    const salt = await bcrypt.genSalt(10);                      // Genera un salt para el hash de la contraseña, el número de rondas de salting, que determina la complejidad del hash, Un número mayor de rondas hace que el hash sea más seguro, pero también más lento de calcular
     const hashedPassword = await bcrypt.hash(password, salt);   // Crea un hash de la contraseña utilizando el salt generado
 
     // Verifica si el usuario ya existe en la base de datos
@@ -38,12 +36,9 @@ const registrar = asyncHandler(async (req, res) => {
         password: hashedPassword                                // Usar la contraseña hasheada en lugar de la contraseña en texto plano
     });
 
-    // Si se pudo crear el usuario, devuelve los datos del usuario y un token JWT
-    // El token JWT se utiliza para autenticar al usuario en futuras solicitudes
-    // El token se genera utilizando el ID del usuario y una clave secreta definida en las variables de entorno
-    // El token expirará en 30 días
+    // Si se pudo crear el usuario, devuelve los datos del usuario y un token JWT, que se utiliza para autenticar al usuario en futuras solicitudes
     if (user) {                                                     // Si el usuario se creó correctamente...
-        res.status(201).json({                                      // Devuelve el nuevo usuario creado y un token JWT
+        res.status(201).json({                                      // ... Devuelve el nuevo usuario creado y un token JWT, estatuas 201 indica que la solicitud ha tenido éxito
             _id: user._id,
             nombre: user.nombre,
             email: user.email,
@@ -64,7 +59,7 @@ const login = asyncHandler(async (req, res) => {
     // Verifica si el usuario existe en la base de datos
     const user = await User.findOne({ email });                     // Busca un usuario con el email proporcionado
     if (user && (await bcrypt.compare(password, user.password))) {  // Si el usuario existe y la contraseña proporcionada es igual a la almacenada en la base de datos...
-        res.json({                                                  // ... Devuelve los datos del usuario y un token JWT
+        res.json({                                                  // ... Devuelve en la respuesta (res) los datos del usuario y un token JWT
             _id: user._id,
             nombre: user.nombre,
             email: user.email,
@@ -79,16 +74,15 @@ const login = asyncHandler(async (req, res) => {
 // Controlador para obtener los datos del usuario autenticado
 const misDatos = asyncHandler(async (req, res) => {
     // Obtiene el usuario autenticado de la solicitud
-    const { user } = req;                                       // Extrae el usuario del objeto de solicitud (req)
-    res.json(user);                                             // Devuelve los datos del usuario en formato JSON
+    res.status(200).json(req.user);                                 // Devuelve los datos del usuario en formato JSON y un estado 200 (OK)
 });
 
 // ------------- Función para generar un token JWT
-const generateToken = (id) => {
-    return jwt.sign({ id },                                     // Genera un token JWT utilizando el ID del usuario
-        process.env.JWT_SECRET,                                 // La clave secreta para firmar el token (Ver las variables de entorno)
+const generateToken = (id_usuario) => {
+    return jwt.sign({ id_usuario },                                 // Genera un token JWT utilizando el ID del usuario
+        process.env.JWT_SECRET,                                     // La clave secreta para firmar el token (Ver las variables de entorno)
         {                               
-        expiresIn: '30d'                                        // El token expirará en 30 días
+        expiresIn: '30d'                                            // El token expirará en 30 días
     });
 }
 
