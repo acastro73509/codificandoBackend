@@ -39,10 +39,10 @@ const registrar = asyncHandler(async (req, res) => {
     // Si se pudo crear el usuario, devuelve los datos del usuario y un token JWT, que se utiliza para autenticar al usuario en futuras solicitudes
     if (user) {                                                     // Si el usuario se creó correctamente...
         res.status(201).json({                                      // ... Devuelve el nuevo usuario creado y un token JWT, estatuas 201 indica que la solicitud ha tenido éxito
-            _id: user._id,
+            _id: user.id,
             nombre: user.nombre,
             email: user.email,
-            token: generateToken(user._id)                          // Genera un token JWT para el nuevo usuario
+            token: generateToken(user.id)                          // Genera un token JWT para el nuevo usuario
         });
     } else {                                                        // Si no se pudo crear el usuario...
         res.status(400);                                            // ... devuelve un error 400 (Solicitud incorrecta)
@@ -60,10 +60,10 @@ const login = asyncHandler(async (req, res) => {
     const user = await User.findOne({ email });                     // Busca un usuario con el email proporcionado
     if (user && (await bcrypt.compare(password, user.password))) {  // Si el usuario existe y la contraseña proporcionada es igual a la almacenada en la base de datos...
         res.json({                                                  // ... Devuelve en la respuesta (res) los datos del usuario y un token JWT
-            _id: user._id,
+            _id: user.id,
             nombre: user.nombre,
             email: user.email,
-            token: generateToken(user._id)                          // Genera un token JWT para el usuario autenticado
+            token: generateToken(user.id)                          // Genera un token JWT para el usuario autenticado
         });
     } else {                                                        // Si el usuario no existe o la contraseña es incorrecta... 
         res.status(401);                                            // ... Devuelve un error 401 (No autorizado)
