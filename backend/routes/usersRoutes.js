@@ -11,7 +11,7 @@ const protect = require('../middleware/authMiddleware');            // Importaci
 // Definición de las rutas para los usuarios, estas se encargan de manejar las solicitudes HTTP para los usuarios
 router.get('/datos', protect, misDatos);                            // Ruteador para obtener los datos del usuario autenticado por el método GET
 router.post('/login', login);                                       // Ruteador para iniciar sesión por el método POST
-router.post('/', protect, registrar);                               // Ruteador para registrar un nuevo usuario por el método POST, si tiene el middleware protect, significa que la ruta está protegida y requiere autenticación
+router.post('/', registrar);                                        // Ruteador para registrar un nuevo usuario por el método POST
 
 
 // Exportar el ruteador para que pueda ser utilizado en otros archivos
