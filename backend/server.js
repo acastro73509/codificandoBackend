@@ -8,7 +8,6 @@ const connectDB = require('./config/db');                   // Importación de l
 const errorHandler = require('./middleware/errorMiddleware'); // Importación del middleware de manejo de errores
 const cors = require('cors');                             // Importación del módulo cors para habilitar CORS
 
-
 // Configuración de la variable de entorno PORT, si no se encuentra, se usa el puerto 5000
 const port = process.env.PORT || 5000;                      // Tomar el valor de la variable de entorno PORT o 5000 si no se encuentra
 
