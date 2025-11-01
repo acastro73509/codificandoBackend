@@ -16,3 +16,23 @@ router.delete('/:id', protect, deleteTareas);                       // Ruteador 
 
 // Exportar el ruteador para que pueda ser utilizado en otros archivos
 module.exports = router;                                            // Esto permite que las rutas definidas aquí sean accesibles desde el archivo principal del servidor                                     
+
+
+// Get Tareas (GET)
+// http://localhost:5000/api/tareas/
+// https://codificandobackend.onrender.com/api/tareas/
+
+// Create Tareas (POST)
+// http://localhost:5000/api/tareas/
+// https://codificandobackend.onrender.com/api/tareas/
+
+// Update Tareas (PUT)
+// http://localhost:5000/api/tareas/{id}
+// https://codificandobackend.onrender.com/api/tareas/{id}
+
+// Delete Tareas (DELETE)
+// http://localhost:5000/api/tareas/{id}
+// https://codificandobackend.onrender.com/api/tareas/{id}
+
+
+

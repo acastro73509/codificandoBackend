@@ -16,3 +16,16 @@ router.post('/', registrar);                                        // Ruteador 
 
 // Exportar el ruteador para que pueda ser utilizado en otros archivos
 module.exports = router;                                            // Esto permite que las rutas definidas aquí sean accesibles desde
+
+// Login (POST)
+// http://localhost:5000/api/users/login
+// https://codificandobackend.onrender.com/api/users/login
+
+// User Registrar (POST)
+// http://localhost:5000/api/users/
+// https://codificandobackend.onrender.com/api/users/
+
+// User Datos (GET)
+// http://localhost:5000/api/users/datos
+// https://codificandobackend.onrender.com/api/users/datos
+
